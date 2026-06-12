@@ -18,8 +18,8 @@ public struct AirPodsMotionData: BaseDbModelSQLite {
     public var os: String = "iOS"
     public var jsonVersion: Int = 1
 
-    public static let TABLE_NAME = "airPodsMotionData"
-    public static let databaseTableName = "airpods_motion"
+    public static let TABLE_NAME = "ios_airpods_motion"
+    public static let databaseTableName = TABLE_NAME
 
     // Attitude (Euler angles in radians)
     public var roll: Double = 0.0
