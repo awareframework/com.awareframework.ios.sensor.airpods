@@ -77,9 +77,9 @@ public class AirPodsMotionSensor: AwareSensor {
 
     public class Config: SensorConfig {
         /// Requested UI/config value. CMHeadphoneMotionManager controls its own delivery interval.
-        public var frequency: Int = 50
-        /// Save-to-DB interval in minutes.
-        public var period: Double = 1
+        public var samplingFrequencyHz: Int = 50
+        /// Save-to-DB interval in seconds.
+        public var saveIntervalSeconds: Double = 60
         public var sensorObserver: AirPodsMotionObserver?
 
         public override init() {
@@ -90,11 +90,11 @@ public class AirPodsMotionSensor: AwareSensor {
 
         public override func set(config: [String: Any]) {
             super.set(config: config)
-            if let frequency = config["frequency"] as? Int {
-                self.frequency = frequency
+            if let samplingFrequencyHz = config["samplingFrequencyHz"] as? Int {
+                self.samplingFrequencyHz = samplingFrequencyHz
             }
-            if let period = config["period"] as? Double {
-                self.period = period
+            if let saveIntervalSeconds = config["saveIntervalSeconds"] as? Double {
+                self.saveIntervalSeconds = saveIntervalSeconds
             }
         }
 
@@ -177,7 +177,7 @@ public class AirPodsMotionSensor: AwareSensor {
 
             self.dataBuffer.append(data)
 
-            if now < self.LAST_SAVE + (self.CONFIG.period * 60) { return }
+            if now < self.LAST_SAVE + (self.CONFIG.saveIntervalSeconds) { return }
 
             let batch = Array(self.dataBuffer)
             self.dataBuffer.removeAll()
@@ -197,7 +197,7 @@ public class AirPodsMotionSensor: AwareSensor {
         }
 
         if CONFIG.debug {
-            print(AirPodsMotionSensor.TAG, "AirPods Motion sensor active: \(CONFIG.frequency) Hz")
+            print(AirPodsMotionSensor.TAG, "AirPods Motion sensor active: \(CONFIG.samplingFrequencyHz) Hz")
         }
         notificationCenter.post(name: .actionAwareAirPodsMotionStart, object: self)
     }

@@ -6,7 +6,7 @@ This sensor module collects motion data from AirPods Pro and AirPods Max via `CM
 
 > The update rate is controlled by the AirPods firmware and cannot be configured programmatically. Data is delivered at the hardware's native rate (approximately 100 Hz).
 
-[Apple | CMHeadphoneMotionManager](https://developer.apple.com/documentation/coremotion/cmheadphonemotionmanager)  
+[Apple | CMHeadphoneMotionManager](https://developer.apple.com/documentation/coremotion/cmheadphonemotionmanager)
 [Apple | CMDeviceMotion](https://developer.apple.com/documentation/coremotion/cmdevicemotion)
 
 ## Requirements
@@ -29,11 +29,11 @@ This sensor module collects motion data from AirPods Pro and AirPods Max via `CM
 
 ### AirPodsMotionSensor
 
-+ `init(config: AirPodsMotionSensor.Config)` : Initializes the sensor with the given configuration.
-+ `start()` : Starts motion data collection.
-+ `stop()` : Stops motion data collection.
-+ `sync(force: Bool)` : Syncs stored data to the configured host.
-+ `set(label: String)` : Updates the data label at runtime.
++ `init(config: AirPodsMotionSensor.Config)`: Initializes the sensor with the given configuration.
++ `start()`: Starts motion data collection.
++ `stop()`: Stops motion data collection.
++ `sync(force: Bool)`: Syncs stored data to the configured host.
++ `set(label: String)`: Updates the data label at runtime.
 
 ### AirPodsMotionSensor.Config
 
@@ -41,14 +41,14 @@ Class to hold the configuration of the sensor.
 
 #### Fields
 
-+ `sensorObserver: AirPodsMotionObserver?` : Callback for live data updates. (default = `nil`)
-+ `period: Double` : Interval in minutes at which buffered data is saved to the database. (default = `1`)
-+ `debug: Bool` : Enable/disable logging to the Xcode console. (default = `false`)
-+ `label: String` : Customizable label attached to every data record. (default = `""`)
-+ `deviceId: String` : Device UUID associated with the data. (default = system UUID)
-+ `dbType: Engine` : Database engine to use. (default = `Engine.DatabaseType.NONE`)
-+ `dbPath: String` : Path of the database. (default = `"aware_airpods"`)
-+ `dbHost: String?` : Host URL for database sync. (default = `nil`)
++ `sensorObserver: AirPodsMotionObserver?`: Callback for live data updates. (default = `nil`)
++ `saveIntervalSeconds: Double`: Interval in seconds at which buffered data is saved to the database. (default = `60`)
++ `debug: Bool`: Enable/disable logging to the Xcode console. (default = `false`)
++ `label: String`: Customizable label attached to every data record. (default = `""`)
++ `deviceId: String`: Device UUID associated with the data. (default = `system UUID`)
++ `dbType: DatabaseType`: Database engine to use. (default = `.none`)
++ `dbPath: String`: Path of the database. (default = `"aware_airpods"`)
++ `dbHost: String?`: Host URL for database sync. (default = `nil`)
 
 ### AirPodsMotionObserver
 
@@ -64,18 +64,18 @@ public protocol AirPodsMotionObserver {
 
 ### Fired Broadcasts
 
-+ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION` : Fired when motion data is saved to the database after the period ends.
-+ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_START` : Fired when the sensor starts.
-+ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_STOP` : Fired when the sensor stops.
-+ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_CONNECTED` : Fired when AirPods connect.
-+ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_DISCONNECTED` : Fired when AirPods disconnect.
++ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION`: Fired when motion data is saved to the database after the save interval ends.
++ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_START`: Fired when the sensor starts.
++ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_STOP`: Fired when the sensor stops.
++ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_CONNECTED`: Fired when AirPods connect.
++ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_DISCONNECTED`: Fired when AirPods disconnect.
 
 ### Received Broadcasts
 
-+ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_START` : Start the sensor.
-+ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_STOP` : Stop the sensor.
-+ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_SYNC` : Trigger a database sync.
-+ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_SET_LABEL` : Set the data label. Provide the value in `AirPodsMotionSensor.EXTRA_LABEL`.
++ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_START`: Start the sensor.
++ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_STOP`: Stop the sensor.
++ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_SYNC`: Trigger a database sync.
++ `AirPodsMotionSensor.ACTION_AWARE_AIRPODS_MOTION_SET_LABEL`: Set the data label. Provide the value in `AirPodsMotionSensor.EXTRA_LABEL`.
 
 ## Data Representations
 
@@ -150,7 +150,7 @@ Contains one sample of AirPods motion data. Table name: `airpods_motion`.
 | os                 | String | Operating system of the device (`"iOS"`)                         |
 | jsonVersion        | Int    | JSON schema version                                              |
 
-> `headphonePlacement` is derived from `CMDeviceMotion.sensorLocation.rawValue` (iOS 14+):  
+> `headphonePlacement` is derived from `CMDeviceMotion.sensorLocation.rawValue` (iOS 14+):
 > `.default` → `0`, `.headphoneLeft` → `1`, `.headphoneRight` → `2`.
 
 ## Example Usage
@@ -160,7 +160,7 @@ import com_awareframework_ios_sensor_airpods
 
 let sensor = AirPodsMotionSensor(AirPodsMotionSensor.Config().apply { config in
     config.debug = true
-    config.period = 1.0
+    config.saveIntervalSeconds = 60
     config.sensorObserver = Observer()
 })
 
