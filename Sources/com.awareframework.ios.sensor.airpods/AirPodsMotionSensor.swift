@@ -74,6 +74,10 @@ public class AirPodsMotionSensor: AwareSensor {
         q.qualityOfService = .userInitiated
         return q
     }()
+    /// Rows are written here, one batch at a time in the order they were collected: off the main
+    /// thread and off the queue that receives the sensor. `.utility`, since storing data is not work
+    /// the user waits for (a queue created for each save ran at the receiving queue's priority).
+    private let saveQueue = DispatchQueue(label: "com.awareframework.ios.sensor.airpods.save", qos: .utility)
 
     public class Config: SensorConfig {
         /// Requested UI/config value. CMHeadphoneMotionManager controls its own delivery interval.
@@ -183,7 +187,7 @@ public class AirPodsMotionSensor: AwareSensor {
             self.dataBuffer.removeAll()
             self.LAST_SAVE = now
 
-            OperationQueue().addOperation {
+            self.saveQueue.async {
                 self.dbEngine?.save(batch) { error in
                     if let error {
                         if self.CONFIG.debug { print(AirPodsMotionSensor.TAG, error) }
